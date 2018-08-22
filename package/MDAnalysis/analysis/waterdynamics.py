@@ -596,11 +596,10 @@ class HydrogenBondLifetimes(object):
         return a
 
     def _HBA(self, ts, conn, universe, selAtom1, selAtom2,
-             verbose=None, quiet=None):
+             verbose=False):
         """
         Main function for calculate C_i and C_c in parallel.
         """
-        verbose = _set_verbose(verbose, quiet, default=False)
         finalGetResidue1 = selAtom1
         finalGetResidue2 = selAtom2
         frame = ts.frame

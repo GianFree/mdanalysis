@@ -810,20 +810,6 @@ class RMSF(AnalysisBase):
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
 
-    def run(self, start=None, stop=None, step=None, verbose=None, quiet=None):
-        """Perform the analysis."""
-
-        if any([el is not None for el in (start, stop, step, quiet)]):
-            warnings.warn("run arguments are deprecated. Please pass them at "
-                          "class construction. These options will be removed in 0.17.0",
-                          category=DeprecationWarning)
-            verbose = _set_verbose(verbose, quiet, default=False)
-            # regenerate class with correct args
-            super(RMSF, self).__init__(self.atomgroup.universe.trajectory,
-                                       start=start, stop=stop, step=step,
-                                       verbose=verbose)
-        return super(RMSF, self).run()
-
     def _prepare(self):
         self.sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
         self.mean = self.sumsquares.copy()

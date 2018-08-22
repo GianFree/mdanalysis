@@ -36,7 +36,7 @@ import logging
 import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from MDAnalysis.lib.log import ProgressMeter
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +90,7 @@ class AnalysisBase(object):
     """
 
     def __init__(self, trajectory, start=None,
-                 stop=None, step=None, verbose=None, quiet=None):
+                 stop=None, step=None, verbose=False):
         """
         Parameters
         ----------
@@ -105,8 +105,7 @@ class AnalysisBase(object):
         verbose : bool, optional
             Turn on verbosity
         """
-        self._verbose = _set_verbose(verbose, quiet, default=False)
-        self._quiet = not self._verbose
+        self._verbose = verbose
         self._setup_frames(trajectory, start, stop, step)
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
@@ -135,19 +134,6 @@ class AnalysisBase(object):
         if interval == 0:
             interval = 1
 
-        # ensure _verbose is set when __init__ wasn't called, this is to not
-        # break pre 0.16.0 API usage of AnalysisBase
-        if not hasattr(self, '_verbose'):
-            if hasattr(self, '_quiet'):
-                # Here, we are in the odd case where a children class defined
-                # self._quiet without going through AnalysisBase.__init__.
-                warnings.warn("The *_quiet* attribute of analyses is "
-                              "deprecated (from 0.16)use *_verbose* instead.",
-                              DeprecationWarning)
-                self._verbose = not self._quiet
-            else:
-                self._verbose = True
-                self._quiet = not self._verbose
         self._pm = ProgressMeter(self.n_frames if self.n_frames else 1,
                                  interval=interval, verbose=self._verbose)
 

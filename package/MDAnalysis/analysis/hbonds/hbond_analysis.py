@@ -407,7 +407,7 @@ class HydrogenBondAnalysis(object):
                  distance=3.0, angle=120.0,
                  forcefield='CHARMM27', donors=None, acceptors=None,
                  start=None, stop=None, step=None,
-                 debug=None, detect_hydrogens='distance', verbose=None, pbc=False):
+                 debug=False, detect_hydrogens='distance', verbose=False, pbc=False):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
@@ -496,7 +496,7 @@ class HydrogenBondAnalysis(object):
             If set to ``True`` enables per-frame debug logging. This is disabled
             by default because it generates a very large amount of output in
             the log file. (Note that a logger must have been started to see
-            the output, e.g. using :func:`MDAnalysis.start_logging`.)
+            the output, e.g. using :func:`MDAnalysis.start_logging`.) [``False``]
         verbose : bool (optional)
             Toggle progress output. (Can also be given as keyword argument to
             :meth:`run`.)
@@ -606,19 +606,10 @@ class HydrogenBondAnalysis(object):
 
         self.table = None  # placeholder for output table
 
-        self.debug = True  # always enable debug output for initial selection update
         self._update_selection_1()
         self._update_selection_2()
         # per-frame debugging output?
-        # This line must be changed at the end of the deprecation period for
-        # the *quiet* keyword argument. Then it must become:
-        # self.debug = debug
-        # In the signature, *verbose* must be removed and the default value
-        # for *debug* must be set to False.
-        # See the docstring for lib.log._set_verbose, the pull request #1150,
-        # and the issue #903.
-        self.debug = _set_verbose(debug, verbose, default=False,
-                                  was='verbose', now='debug')
+        self.debug = debug
 
         self._log_parameters()
 
@@ -944,12 +935,10 @@ class HydrogenBondAnalysis(object):
             logger.error("Problem reading trajectory or trajectory slice incompatible.")
             logger.exception()
             raise
-        verbose = _set_verbose(verbose=kwargs.get('verbose', None),
-                               quiet=kwargs.get('quiet', None),
-                               default=True)
+
         pm = ProgressMeter(len(frames),
                            format="HBonds frame {current_step:5d}: {step:5d}/{numsteps} [{percentage:5.1f}%]\r",
-                           verbose=verbose)
+                           verbose=kwargs.get('verbose', False))
 
         try:
             self.u.trajectory.time

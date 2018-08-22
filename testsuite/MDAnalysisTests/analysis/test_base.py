@@ -92,7 +92,6 @@ def test_step(u):
 def test_verbose(u):
     a = FrameAnalysis(u.trajectory, verbose=True)
     assert a._verbose
-    assert not a._quiet
 
 
 def test_incomplete_defined_analysis(u):
@@ -132,7 +131,6 @@ def test_filter_baseanalysis_kwargs():
     assert base_kwargs['start'] is None
     assert base_kwargs['step'] == 3
     assert base_kwargs['stop'] is None
-    assert base_kwargs['quiet'] is None
     assert base_kwargs['verbose'] is None
 
 
