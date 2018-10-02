@@ -62,7 +62,7 @@ Data files
       import numpy as np
       import matplotlib.pyplot as plt
       from MDAnalysis.analysis.data.filenames import Janin_ref
-      X, Y = np.meshgrid(np.arange(-180, 180, 4), np.arange(-180, 180, 4))
+      X, Y = np.meshgrid(np.arange(-180, 180, 6), np.arange(-180, 180, 6))
       Z = np.load(Janin_ref)
       ax.contourf(X, Y, Z, levels=[1, 6, 600])
 
